@@ -89,28 +89,55 @@ Impact:
 
 ## Installation Guide
 
-### Step 1
-Install dependencies:
+🔧 REQUIREMENTS
+Before starting, install:
+
 sudo apt update
-sudo apt install apache2 mysql-server php php-mysql
+sudo apt install apache2 mariadb-server php php-mysql git -y
 
-### Step 2
-Clone repository:
+⚙️ STEP 1: SERVICES START
+sudo systemctl start apache2
+sudo systemctl start mariadb
+sudo systemctl enable apache2
+sudo systemctl enable mariadb
+
+📥 STEP 2: CLONE PROJECT
 git clone https://github.com/Farhan15914/cybersecurity-vulnerable-lab.git
-
-### Step 3
-Move project to Apache directory:
 sudo mv cybersecurity-vulnerable-lab /var/www/html/
 
-### Step 4
-Start Apache:
-sudo systemctl start apache2
+🔐 STEP 3: PERMISSIONS
+sudo chown -R www-data:www-data /var/www/html/
+sudo chmod -R 755 /var/www/html/
 
-### Step 5
-Access the website:
+🗄️ STEP 4: DATABASE SETUP (MOST IMPORTANT)
+👉 MariaDB open:
+    sudo mysql
+
+👉 run this: 
+    CREATE DATABASE vulnsite;
+    CREATE USER 'labuser'@'localhost' IDENTIFIED BY '1234';
+    GRANT ALL PRIVILEGES ON vulnsite.* TO 'labuser'@'localhost';
+    FLUSH PRIVILEGES;
+    EXIT;
+📂 STEP 5: IMPORT DATABASE
+👉 (repo lo already .sql file undi)
+sudo mysql vulnsite < /var/www/html/cybersecurity-vulnerable-lab/database.sql
+
+⚙️ STEP 6: CONFIG FIX (CRITICAL)
+sudo nano /var/www/html/cybersecurity-vulnerable-lab/config.php
+
+👉 replace with:
+
+$conn = mysqli_connect("127.0.0.1","labuser","1234","vulnsite");
+
+🔄 STEP 7: APACHE RESTART
+sudo systemctl restart apache2
+
+🌐 STEP 8: RUN PROJECT
+
+👉 In browser:
 http://localhost/cybersecurity-vulnerable-lab
 
----
 
 ## Educational Purpose Only
 
@@ -119,17 +146,6 @@ This project was created strictly for **educational and cybersecurity training p
 Do not deploy this application on a public server.
 
 ---
-
-## Author
-
-Farhan Bahadure  
-Cybersecurity Student
-
-GitHub:
-https://github.com/Farhan15914
-
----
-
 ## Future Improvements
 
 - Add more OWASP vulnerabilities
